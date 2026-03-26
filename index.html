@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IoT Dashboard - Elmia & Moses</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div id="snow-container"></div>
+
+    <div class="main-content" style="display: block; opacity: 1;">
+        <header>
+            <div class="header-info">
+                <h1>Temperature and Air Quality Monitoring</h1>
+                <p>Created by: Elmia Pratiwie & Moses Alexander</p>
+            </div>
+            <div id="status-badge" class="badge-disconnected">
+                <span class="status-dot"></span>
+                <span id="status-text">Disconnected</span>
+            </div>
+        </header>
+
+        <div class="card-grid">
+            <div class="glass-card b-blue">
+                <div class="card-head">Suhu LM35</div>
+                <div class="card-val"><span id="val-tempLM">--</span><span class="unit">°C</span></div>
+            </div>
+            <div class="glass-card b-red">
+                <div class="card-head">Suhu DHT22</div>
+                <div class="card-val"><span id="val-tempDHT">--</span><span class="unit">°C</span></div>
+            </div>
+            <div class="glass-card b-green">
+                <div class="card-head">Kelembapan</div>
+                <div class="card-val"><span id="val-hum">--</span><span class="unit">%</span></div>
+            </div>
+            <div class="glass-card b-purple">
+                <div class="card-head">CO2 Level</div>
+                <div class="card-val"><span id="val-co2">--</span> <small>PPM</small></div>
+            </div>
+        </div>
+
+        <div class="action-row">
+            <div class="glass-panel control-box">
+                <h3>Settings</h3>
+                <div class="input-inline">
+                    <label>Interval (s)</label>
+                    <input type="number" id="interval-input" value="5">
+                </div>
+                <div class="btn-group">
+                    <button id="btn-start" class="btn-go">Start</button>
+                    <button id="btn-stop" class="btn-stop" disabled>Stop</button>
+                </div>
+            </div>
+            <div class="glass-panel info-box">
+                <h3>System Status</h3>
+                <p id="update-status">Silahkan tekan Start untuk memonitor.</p>
+            </div>
+        </div>
+
+        <div class="glass-panel chart-box">
+            <div class="chart-nav">
+                <button onclick="switchSensor('tempDHT', '#FFB7B2')" class="tab-btn active">🌡️ DHT22</button>
+                <button onclick="switchSensor('tempLM', '#B2E2F2')" class="tab-btn">🌡️ LM35</button>
+                <button onclick="switchSensor('hum', '#B2F2BB')" class="tab-btn">💧 Humidity</button>
+                <button onclick="switchSensor('co2', '#D1B2F2')" class="tab-btn">☁️ CO2</button>
+            </div>
+            <div class="chart-container-single">
+                <canvas id="mainChart"></canvas>
+            </div>
+        </div>
+
+        <div class="glass-panel table-box">
+            <div class="table-header">
+                <h3>History Data</h3>
+                <div class="search-bar">
+                    <input type="date" id="search-date">
+                    <input type="time" id="search-time" step="1">
+                    <button onclick="applySearch()">Search</button>
+                </div>
+            </div>
+            <div class="table-scroll">
+                <table id="data-table">
+                    <thead>
+                        <tr><th>Date</th><th>Time</th><th>LM35 (°C)</th><th>DHT22 (°C)</th><th>Hum (%)</th><th>CO2 (PPM)</th></tr>
+                    </thead>
+                    <tbody id="table-body"></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
