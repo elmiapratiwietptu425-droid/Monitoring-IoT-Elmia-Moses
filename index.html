@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Temperature & Air Quality Monitor</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Barlow+Condensed:wght@300;400;600;700;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+
+  <!-- ALERT OVERLAY -->
+  <div id="alertOverlay" class="alert-overlay hidden">
+    <div class="alert-text">⚠ KONDISI TIDAK NORMAL</div>
+    <div id="alertDetail" class="alert-detail"></div>
+  </div>
+
+  <!-- HEADER -->
+  <header class="site-header">
+    <div class="header-left">
+      <span class="header-badge">LIVE</span>
+      <h1 class="site-title">Temperature &amp; Air Quality<br><span>Monitoring System</span></h1>
+    </div>
+    <div class="header-right">
+      <div class="clock-block">
+        <div id="clockDisplay" class="clock-val">--:--:--</div>
+        <div id="dateDisplay" class="clock-date">-- / -- / ----</div>
+      </div>
+      <div class="status-dot" id="statusDot"></div>
+    </div>
+  </header>
+
+  <!-- MAIN CONTENT -->
+  <main class="container">
+
+    <!-- CONFIG BAR -->
+    <section class="config-bar">
+      <div class="config-group">
+        <label for="apiUrl">Google Script URL</label>
+        <input type="password" id="apiUrl" placeholder="Masukkan URL Google Apps Script..." />
+      </div>
+      <div class="config-group narrow">
+        <label for="intervalInput">Interval (detik)</label>
+        <input type="number" id="intervalInput" value="5" min="2" max="60" />
+      </div>
+      <div class="config-actions">
+        <button id="btnStart" class="btn btn-start">▶ START</button>
+        <button id="btnStop" class="btn btn-stop" disabled>■ STOP</button>
+      </div>
+      <div class="log-status" id="logStatus">● IDLE</div>
+    </section>
+
+    <!-- SENSOR CARDS -->
+    <section class="sensor-grid">
+
+      <div class="sensor-card" id="card-lm">
+        <div class="card-label">SUHU LM35</div>
+        <div class="card-value" id="val-lm">--.-</div>
+        <div class="card-unit">°C</div>
+        <div class="card-range">Normal: 24 – 29 °C</div>
+        <div class="card-status" id="status-lm">—</div>
+        <div class="card-bar"><div class="bar-fill" id="bar-lm"></div></div>
+      </div>
+
+      <div class="sensor-card" id="card-dht">
+        <div class="card-label">SUHU DHT22</div>
+        <div class="card-value" id="val-dht">--.-</div>
+        <div class="card-unit">°C</div>
+        <div class="card-range">Normal: 24 – 29 °C</div>
+        <div class="card-status" id="status-dht">—</div>
+        <div class="card-bar"><div class="bar-fill" id="bar-dht"></div></div>
+      </div>
+
+      <div class="sensor-card" id="card-hum">
+        <div class="card-label">KELEMBAPAN</div>
+        <div class="card-value" id="val-hum">--.-</div>
+        <div class="card-unit">%</div>
+        <div class="card-range">Normal: &lt; 80 %</div>
+        <div class="card-status" id="status-hum">—</div>
+        <div class="card-bar"><div class="bar-fill" id="bar-hum"></div></div>
+      </div>
+
+      <div class="sensor-card" id="card-co2">
+        <div class="card-label">CO₂ / PPM</div>
+        <div class="card-value" id="val-co2">----</div>
+        <div class="card-unit">ppm</div>
+        <div class="card-range">Normal: 400 – 1000 ppm</div>
+        <div class="card-status" id="status-co2">—</div>
+        <div class="card-bar"><div class="bar-fill" id="bar-co2"></div></div>
+      </div>
+
+    </section>
+
+    <!-- CHART SECTION -->
+    <section class="chart-section">
+      <div class="chart-header">
+        <div class="section-title">GRAFIK SENSOR</div>
+        <div class="chart-tabs">
+          <button class="tab-btn active" data-chart="lm">LM35</button>
+          <button class="tab-btn" data-chart="dht">DHT Suhu</button>
+          <button class="tab-btn" data-chart="hum">Kelembapan</button>
+          <button class="tab-btn" data-chart="co2">CO₂</button>
+        </div>
+      </div>
+      <div class="chart-wrap">
+        <canvas id="sensorChart"></canvas>
+      </div>
+    </section>
+
+    <!-- DATA TABLE -->
+    <section class="table-section">
+      <div class="table-header">
+        <div class="section-title">LOG DATA</div>
+        <div class="table-meta" id="tableMeta">— entri</div>
+      </div>
+      <div class="table-wrap">
+        <table id="dataTable">
+          <thead>
+            <tr>
+              <th>No</th>
+              <th>Tanggal</th>
+              <th>Waktu</th>
+              <th>Suhu LM35 (°C)</th>
+              <th>Suhu DHT22 (°C)</th>
+              <th>Kelembapan (%)</th>
+              <th>CO₂ (ppm)</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody id="tableBody">
+            <tr><td colspan="8" class="empty-row">Belum ada data — tekan START untuk mulai.</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+  </main>
+
+  <footer class="site-footer">
+    <span>Air Quality Monitor &mdash; ESP32 + DHT22 + LM35 + MQ135</span>
+    <span id="lastUpdate">Terakhir update: —</span>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>
